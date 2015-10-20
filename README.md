@@ -2,7 +2,7 @@ Balancer: Parallelizing command lines by MPI
 ===========================
 
 How to
---------------------------------------------
+-----
 
 ### Terminology
 
@@ -64,14 +64,12 @@ $ mpirun -np ``n`` ./balancer command.txt arguments.txt
 $ ./balancer command.txt arguments.txt arugments_additional.txt
 ```
 
-File description
-================
+File descriptions
+---------------
 
-### balancer.cpp
+balancer.cpp
+: MPI application written in C++
 
-MPI application written in C++
-
-### makefile
-
-The file contains required commands for building balancer.cpp and
+makefile
+: The file contains required commands for building balancer.cpp and
 generating balancer binary.
