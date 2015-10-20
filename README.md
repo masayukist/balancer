@@ -1,4 +1,3 @@
---------------------------------------------
 Balancer: Parallelizing command lines by MPI
 --------------------------------------------
 
@@ -7,22 +6,26 @@ How to
 
 ### Terminology
 
-command line: what you want to execute in a command-line interpreter
-(bash, zsh, etc...)
+command line
+: what you want to execute in a command-line interpreter
 
-command: A part of a command line, which does not change among
-parallelized command lines.
+command
+: A part of a command line, which does not change among parallelized
+command lines
 
-arguments: A part of a command line, which changes among parallelized
-command lines.
+arguments
+: A part of a command line, which changes among parallelized command
+lines
 
 ### Usage
 
 Ex. when you want to execute following command lines in parallel fashion.
+```
 $ prog args1 > args1-out.txt
 $ prog args2 > args2-out.txt
 $ prog args3 > args3-out.txt
 $ prog args4 > args4-out.txt
+```
 
 - Build Balancer
 $ make
