@@ -37,13 +37,13 @@ $ make
 $ mkdir results
 ```
 
-- Prepare a file that contains the command, named ``command.txt``.
+- Prepare a file that contains the command, named ``command.txt`` here.
 ```
 $ cat command.txt
 hoge
 ```
 
-- Prepare a file that contains the list of arguments, named ``arguments.txt``.
+- Prepare a file that contains the list of arguments, named ``arguments.txt`` here.
 ```
 $ cat arguments.txt
 args1 > args1-out.txt
@@ -52,9 +52,9 @@ args3 > args3-out.txt
 args4 > args4-out.txt
 ```
 
-- Execute Balancer in ``n`` parallel. (Please follow the manner of ``mpirun`` in your system.)
+- Execute Balancer with ``n`` MPI processes. Please note that this example is for OpenMPI. Follow the manner of ``mpirun`` in your system.)
 ```
-$ mpirun -np ``n`` ./balancer command.txt arguments.txt
+$ mpirun -np 4 ./balancer command.txt arguments.txt
 ```
 
 ### Advanced
