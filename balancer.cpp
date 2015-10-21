@@ -174,16 +174,16 @@ void worker_func( string cmd, string args, bool* completed )
 
 class WorkerThread
 {
-  bool completed;
-  thread* th = NULL;
-public:
-  WorkerThread() { completed = true; }
-  void execute(string cmd, string args) {
-    completed = false;
-    th = new thread(worker_func, cmd, args, &completed);
-  }
-  void join() { if( th ){ th->join(); delete th; } }
-  bool is_completed() { return completed; }
+    bool completed;
+    thread* th;
+  public:
+    WorkerThread() { completed = true; th = NULL; }
+    void execute(string cmd, string args) {
+        completed = false;
+        th = new thread(worker_func, cmd, args, &completed);
+    }
+    void join() { if( th ){ th->join(); delete th; } }
+    bool is_completed() { return completed; }
 };
 
 void usage(int argc, char* argv[])
@@ -244,7 +244,7 @@ int main(int argc, char* argv[])
       // share the status of jobs with the next process,
       // the last process broadcast the status to the all processes
       if      ( i < numprocs-1 ) wait_map.mpi_send_to_recv_from( i+1, i );
-      else if ( i = numprocs-1 ) wait_map.mpi_bcast_from( i );
+      else if ( i == numprocs-1 ) wait_map.mpi_bcast_from( i );
     }
 
     if (myrank == 0) {
