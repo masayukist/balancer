@@ -1,7 +1,7 @@
 # in LX
-#CXX=mpiicpc
+CXX=mpiicpc
 # in grid
-CXX=/usr/lib64/openmpi/bin/mpic++
+#CXX=/usr/lib64/openmpi/bin/mpic++
 
 LDFLAGS=-pthread
 CXXFLAGS=-std=c++0x -Wall -O3
