@@ -5,28 +5,33 @@
 #include <fstream>
 #include <string>
 
-class RankStatusMap {
-  MPISharedMap ranks_active;
+class RankStatusMap
+{
+  MPISharedMap<int> ranks_active;
+  MPISharedMap<long long int> ranks_duration;
+
   int size;
+  long long int start;
+  
 public:
-  RankStatusMap( int _myrank, int _size )
-    : ranks_active( _myrank, _size, TRUE ),
-      size(_size)
-  {}
+  RankStatusMap( int _myrank, int _size );
 
   void mpi_bcast_from( int root_rank ) {
-    ranks_active.mpi_bcast_from(root_rank);
+    ranks_active.mpi_bcast_from( root_rank );
+    ranks_duration.mpi_bcast_from( root_rank );
   }
 
   void mpi_send_to_recv_from( int dest, int source ) {
     ranks_active.mpi_send_to_recv_from( dest, source );
+    ranks_duration.mpi_send_to_recv_from( dest, source );
   }
 
-  void setExit(int i) { ranks_active[i] = FALSE; }
-
+  void setRankExit(int i);
+  bool isRankExit(int i) { return ranks_active[i] == TRUE ? false : true; };
+  
   bool isAllExit() {
     for ( int i = 0; i < size; i++ ) {
-      if ( ranks_active[i] == TRUE )
+      if ( !isRankExit(i) )
         return false;
     }
     return true;

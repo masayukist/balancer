@@ -2,4 +2,5 @@
 #define FALSE 0
 
 #define LOG_DIR "./results"
-#define MAX_ARGS_SIZE   1024
+
+#define SCHEDULE_INTERVAL 2

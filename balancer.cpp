@@ -88,7 +88,7 @@ int main(int argc, char* argv[])
         // no job and not allocation will cause termination
         if ( !job_status_map.existWaitJobs() )
           if ( !workman.isAllocated() )
-            rank_status_map.setExit(myrank);
+            rank_status_map.setRankExit( myrank );
       }
       // share the status of jobs with the next process,
       // the last process broadcast the status to the all processes
@@ -109,8 +109,9 @@ int main(int argc, char* argv[])
     }
 
     // wait until the next scheduling interval
-    sleep(3);
+    sleep(SCHEDULE_INTERVAL);
   }
+
   MPI_Barrier(MPI_COMM_WORLD);
   MPI_Finalize();  
 }
