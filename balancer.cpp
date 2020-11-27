@@ -80,17 +80,21 @@ int main(int argc, char* argv[])
         }
         
         if ( job_status_map.existWaitJobs() )
+        {
           if ( !workman.isAllocated() ) {
             job_id = job_status_map.getNextWaitJob();
             job_status_map.setExecuted(job_id);
             workman.allocate(job_id); 
           }
-
-        // no job and not allocation will cause termination
-        if ( !job_status_map.existWaitJobs() )
-          if ( !workman.isAllocated() )
+        }
+        else// no job and not allocation will cause termination
+        {
+          if ( !workman.isAllocated() ) {
             rank_status_map.setRankExit( myrank );
+          }
+        }
       }
+
       // share the status of jobs with the next process,
       // the last process broadcast the status to the all processes
       job_status_map.mpi_bcast_from( i );
