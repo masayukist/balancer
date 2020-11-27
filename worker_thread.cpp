@@ -1,4 +1,5 @@
 #include "worker_thread.hpp"
+#include <cstdlib>
 
 void worker_func( std::string cmd, std::string args, bool* completed )
 {
@@ -7,6 +8,6 @@ void worker_func( std::string cmd, std::string args, bool* completed )
   command << cmd << " " << args;
   //logger << stamp << "executing -> " << command.str() << endl;
   balancer_cmd << "export BALANCER=1; " << command.str() << std::endl;
-  system(balancer_cmd.str().c_str());
+  std::system(balancer_cmd.str().c_str());
   *completed = true;
 }
