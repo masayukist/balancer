@@ -19,16 +19,11 @@ class JobStatusMap
     JobStatusMap( int _myrank, int _size );
 
     void mpi_bcast_from( int root_rank ) {
-        start_time.mpi_bcast_from(root_rank);
-        MPI_Barrier(MPI_COMM_WORLD);
-        end_time.mpi_bcast_from(root_rank);
-        MPI_Barrier(MPI_COMM_WORLD);
         wait_jobs.mpi_bcast_from(root_rank);
-        MPI_Barrier(MPI_COMM_WORLD);
         exec_jobs.mpi_bcast_from(root_rank);
-        MPI_Barrier(MPI_COMM_WORLD);
         exit_jobs.mpi_bcast_from(root_rank);
-        MPI_Barrier(MPI_COMM_WORLD);
+        start_time.mpi_bcast_from(root_rank);
+        end_time.mpi_bcast_from(root_rank);
 
         for(int i=0; i < size; i++){
             // integrity check
