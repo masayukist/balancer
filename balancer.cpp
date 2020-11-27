@@ -67,6 +67,9 @@ int main(int argc, char* argv[])
       cout << "list of back-ends: " << argv[i] << endl;
   }
 
+  MPI_Barrier(MPI_COMM_WORLD);
+  assert(sizeof(long long int) == sizeof(time_t));
+
   while(true) {
     // schedule jobs to processes by ascending order of rank
     for( int i = 0; i < numprocs; i++ ) {
