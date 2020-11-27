@@ -43,7 +43,7 @@ void JobStatusMap::output_map(Command* cmd, ArgumentsList* arglist)
 void
 JobStatusMap::setExecuted( int i )
 {
-  if (wait_jobs[i] != TRUE) assert(false);
+  assert (wait_jobs[i] == TRUE);
   wait_jobs[i] = FALSE;
   exec_jobs[i] = TRUE;
   time_t t = time(NULL);
@@ -54,8 +54,8 @@ JobStatusMap::setExecuted( int i )
 void
 JobStatusMap::setExit( int i )
 {
-  if (wait_jobs[i] != FALSE) assert(false);
-  if (exec_jobs[i] != TRUE) assert(false);
+  assert (wait_jobs[i] == FALSE);
+  assert (exec_jobs[i] == TRUE);
   exec_jobs[i] = FALSE;
   exit_jobs[i] = TRUE;
   time_t t = time(NULL);

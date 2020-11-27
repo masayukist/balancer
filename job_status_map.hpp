@@ -5,6 +5,7 @@
 
 #include <time.h>
 #include <fstream>
+#include <cstdlib>
 
 class JobStatusMap
 {
@@ -47,7 +48,7 @@ public:
       if( wait_jobs[i] == TRUE ) {
         return i;
       }
-    assert(false);
+    std::exit(1);
   }
 
   void setExecuted( int i );
