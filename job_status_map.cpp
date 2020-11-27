@@ -4,8 +4,10 @@
 
 #include <iomanip>
 #include <ios>
+#include <chrono>
 
 using namespace std;
+using namespace std::chrono;
 
 JobStatusMap::JobStatusMap( int _myrank, int _size )
   : wait_jobs( _myrank, _size, TRUE ),
@@ -23,9 +25,10 @@ void JobStatusMap::output_map(Command* cmd, ArgumentsList* arglist)
 
   o << "wait exec exit job | " << localtimestamp() << endl;
   for ( int i = 0; i < size; i++ ) {
-    long long int t;
+    auto now = static_cast<TIME_T>(duration_cast<seconds>(system_clock::now().time_since_epoch()).count());
+    TIME_T t;
     if (exec_jobs[i] == TRUE)
-      t = time(NULL) - start_time[i];
+      t = now - start_time[i];
     else if (exit_jobs[i] == TRUE)
       t = end_time[i] - start_time[i];
     else
@@ -45,7 +48,7 @@ JobStatusMap::setExecuted( int i )
   assert (wait_jobs[i] == TRUE);
   wait_jobs[i] = FALSE;
   exec_jobs[i] = TRUE;
-  time_t t = time(NULL);
+  auto t = static_cast<TIME_T>(duration_cast<seconds>(system_clock::now().time_since_epoch()).count());
   start_time[i] = t;
   end_time[i] = t;
 }
@@ -57,6 +60,6 @@ JobStatusMap::setExit( int i )
   assert (exec_jobs[i] == TRUE);
   exec_jobs[i] = FALSE;
   exit_jobs[i] = TRUE;
-  time_t t = time(NULL);
+  auto t = static_cast<TIME_T>(duration_cast<seconds>(system_clock::now().time_since_epoch()).count());
   end_time[i] = t;
 }

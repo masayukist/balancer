@@ -3,7 +3,6 @@
 #include "command.hpp"
 #include "argument_list.hpp"
 
-#include <ctime>
 #include <fstream>
 #include <cstdlib>
 
@@ -12,8 +11,8 @@ class JobStatusMap
   MPISharedMap<int> wait_jobs;
   MPISharedMap<int> exec_jobs;
   MPISharedMap<int> exit_jobs;
-  MPISharedMap<long long int> start_time;
-  MPISharedMap<long long int> end_time;
+  MPISharedMap<TIME_T> start_time;
+  MPISharedMap<TIME_T> end_time;
   int size;
   
 public:

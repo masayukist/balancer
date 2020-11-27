@@ -13,8 +13,6 @@
 #include <cassert>
 #include <chrono>
 
-#include <ctime>
-
 #include "job_status_map.hpp"
 #include "rank_status_map.hpp"
 #include "worker_thread_manager.hpp"

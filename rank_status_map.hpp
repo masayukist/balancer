@@ -8,10 +8,9 @@
 class RankStatusMap
 {
   MPISharedMap<int> ranks_active;
-  MPISharedMap<long long int> ranks_duration;
+  MPISharedMap<TIME_T> ranks_duration;
 
   int size;
-  long long int start;
   
 public:
   RankStatusMap( int _myrank, int _size );
