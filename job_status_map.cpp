@@ -1,7 +1,6 @@
 #include "define.hpp"
 #include "job_status_map.hpp"
 #include "utilities.hpp"
-#include <time.h>
 
 #include <iomanip>
 #include <ios>

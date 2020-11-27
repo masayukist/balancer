@@ -1,6 +1,6 @@
 #include "rank_status_map.hpp"
 
-#include <time.h>
+#include <ctime>
 
 #include <iomanip>
 #include <ios>

@@ -3,7 +3,7 @@
 #include "command.hpp"
 #include "argument_list.hpp"
 
-#include <time.h>
+#include <ctime>
 #include <fstream>
 #include <cstdlib>
 

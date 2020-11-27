@@ -10,10 +10,10 @@
 #include <thread>
 #include <cstring>
 #include <cstdlib>
-#include <unistd.h>
 #include <cassert>
+#include <chrono>
 
-#include <time.h>
+#include <ctime>
 
 #include "job_status_map.hpp"
 #include "rank_status_map.hpp"
@@ -109,7 +109,7 @@ int main(int argc, char* argv[])
     }
 
     // wait until the next scheduling interval
-    sleep(SCHEDULE_INTERVAL);
+    std::this_thread::sleep_for(std::chrono::seconds(SCHEDULE_INTERVAL));
   }
 
   MPI_Barrier(MPI_COMM_WORLD);
