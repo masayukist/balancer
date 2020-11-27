@@ -10,13 +10,18 @@ template <typename TYPE>
 class MPISharedMap
 {
 protected:
-  TYPE *map;
   int myrank;
   int size;
+  TYPE *map;
   MPI_Status stat;
   
 public:
   MPISharedMap( int _myrank, int _size, TYPE initial );
+  virtual ~MPISharedMap() 
+  {
+    delete[] map;
+    map=nullptr;
+  }
   TYPE& operator[]( int i );
   
   void mpi_bcast_from( int root_rank );
@@ -29,11 +34,10 @@ public:
 
 template<typename TYPE>
 MPISharedMap<TYPE>::MPISharedMap( int _myrank, int _size, TYPE initial )
-  : myrank(_myrank), size(_size)
+  : myrank(_myrank), size(_size), map(new TYPE[size])
 {
-  map = new TYPE[size];
   for( int i = 0; i < size; i++ )
-    map[i] = (initial == true ? TRUE : FALSE);
+    map[i] = initial;
 }
 
 template<typename TYPE> TYPE&
