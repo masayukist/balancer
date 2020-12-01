@@ -14,20 +14,28 @@ class JobStatusMap
     MPISharedMap<TIME_T> start_time;
     MPISharedMap<TIME_T> end_time;
     int size;
+    int myrank;
 
     public:
     JobStatusMap( int _myrank, int _size );
 
     void mpi_bcast_from( int root_rank ) {
+        start_time.mpi_bcast_from(root_rank);
+        end_time.mpi_bcast_from(root_rank);
+        for(int i=0; i < size; i++){
+            // integrity check
+            assert(wait_jobs[i] != exec_jobs[i] != exit_jobs[i]  // != means exclusive or
+                    && "integrity check failed before send");
+        }
+
         wait_jobs.mpi_bcast_from(root_rank);
         exec_jobs.mpi_bcast_from(root_rank);
         exit_jobs.mpi_bcast_from(root_rank);
-        start_time.mpi_bcast_from(root_rank);
-        end_time.mpi_bcast_from(root_rank);
 
         for(int i=0; i < size; i++){
             // integrity check
-            assert(wait_jobs[i]!=exec_jobs[i] || exec_jobs[i]!=exit_jobs[i]);
+            assert(wait_jobs[i] != exec_jobs[i] != exit_jobs[i]  // != means exclusive or
+                    && "integrity check failed after recieve");
         }
     }
 
