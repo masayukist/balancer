@@ -16,23 +16,28 @@ class WorkerThreadManager
   bool allocated;
   
 public:
-  WorkerThreadManager(Command* cmd, ArgumentsList* alst){
-    command = cmd;
-    arglist = alst;
-    allocated = false;
-  }
+  WorkerThreadManager(Command* cmd, ArgumentsList* alst)
+  : command(cmd), arglist(alst), allocated(false)
+  { }
 
   void allocate(int jobid) {
+    assert(!allocated);
     thread.execute(*command, (*arglist)[jobid]);
     current_jobid = jobid;
     allocated = true;
   }
-  bool isAllocated() { return allocated; }
+  bool isAllocated() { 
+    return allocated; 
+  }
   int getCurrentJobId() {
     assert(allocated);
     return current_jobid;
   }
-  void deallocate() { thread.join(); allocated = false; }
+  void deallocate() { 
+      assert(allocated);
+      thread.join(); 
+      allocated = false; 
+  }
   bool isDeallocatable() { return thread.is_completed() && allocated; }
 };
 
