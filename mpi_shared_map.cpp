@@ -6,7 +6,8 @@ template<>
 void
 MPISharedMap<long long int>::mpi_bcast_from( int root_rank )
 {
-  MPI_Bcast( map.data(), size, MPI_LONG_LONG_INT, root_rank, MPI_COMM_WORLD );
+  auto ret = MPI_Bcast( map.data(), size, MPI_LONG_LONG_INT, root_rank, MPI_COMM_WORLD );
+  assert(ret == MPI_SUCCESS);
 }
 
 template<>
@@ -26,7 +27,8 @@ template<>
 void
 MPISharedMap<int>::mpi_bcast_from( int root_rank )
 {
-  MPI_Bcast( map.data(), size, MPI_INT, root_rank, MPI_COMM_WORLD );
+  auto ret = MPI_Bcast( map.data(), size, MPI_INT, root_rank, MPI_COMM_WORLD );
+  assert(ret == MPI_SUCCESS);
 }
 
 template<>

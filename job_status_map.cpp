@@ -16,14 +16,13 @@ JobStatusMap::JobStatusMap( int _myrank, int _size )
     exec_jobs( myrank, size, FALSE ),
     exit_jobs( myrank, size, FALSE ),
     start_time( myrank, size, 0 ),
-    end_time( myrank, size, 0 )
+    end_time( myrank, size, 0 ),
+    o(string(LOG_DIR)+string("/mpi.job_map.log"))
 {}
 
 
 void JobStatusMap::output_map(Command* cmd, ArgumentsList* arglist)
 {
-  ofstream o(string(LOG_DIR)+string("/mpi.job_map.log"));
-
   o << "wait exec exit job | " << localtimestamp() << endl;
   for ( int i = 0; i < size; i++ ) {
     auto now = static_cast<TIME_T>(duration_cast<seconds>(system_clock::now().time_since_epoch()).count());
@@ -40,7 +39,7 @@ void JobStatusMap::output_map(Command* cmd, ArgumentsList* arglist)
       << setw(40) << left << cmd->get_str() + " " + (*arglist)[i] << " "
       << setw(20) << right << t << " sec." << endl;
   }
-  o.close();
+  o.flush();
 }
 
 void
@@ -49,6 +48,7 @@ JobStatusMap::setExecuted( int i )
   assert (wait_jobs[i]);
   wait_jobs[i] = FALSE;
   exec_jobs[i] = TRUE;
+  exit_jobs[i] = FALSE;
   auto t = static_cast<TIME_T>(duration_cast<seconds>(system_clock::now().time_since_epoch()).count());
   start_time[i] = t;
   end_time[i] = t;
@@ -59,6 +59,7 @@ JobStatusMap::setExit( int i )
 {
   assert (!wait_jobs[i]);
   assert (exec_jobs[i]);
+  wait_jobs[i] = FALSE;
   exec_jobs[i] = FALSE;
   exit_jobs[i] = TRUE;
   auto t = static_cast<TIME_T>(duration_cast<seconds>(system_clock::now().time_since_epoch()).count());
