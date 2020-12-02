@@ -27,7 +27,7 @@ public:
       arguments.push_back(args);
     }
   }
-  std::size_t size() { return arguments.size(); }
+  int size() { return arguments.size(); }
   std::string& operator[](int i) { return arguments[i]; }
 };
 

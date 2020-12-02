@@ -1,22 +1,20 @@
 #include "define.hpp"
 #include "job_status_map.hpp"
 #include "utilities.hpp"
+#include <time.h>
 
 #include <iomanip>
 #include <ios>
-#include <chrono>
 
 using namespace std;
-using namespace std::chrono;
 
 JobStatusMap::JobStatusMap( int _myrank, int _size )
-  : size(_size),
-    myrank(_myrank),
-    wait_jobs( myrank, size, TRUE ),
-    exec_jobs( myrank, size, FALSE ),
-    exit_jobs( myrank, size, FALSE ),
-    start_time( myrank, size, 0 ),
-    end_time( myrank, size, 0 )
+  : wait_jobs( _myrank, _size, TRUE ),
+    exec_jobs( _myrank, _size, FALSE ),
+    exit_jobs( _myrank, _size, FALSE ),
+    start_time( _myrank, _size, 0 ),
+    end_time( _myrank, _size, 0 ),
+    size(_size)
 {}
 
 
@@ -26,10 +24,9 @@ void JobStatusMap::output_map(Command* cmd, ArgumentsList* arglist)
 
   o << "wait exec exit job | " << localtimestamp() << endl;
   for ( int i = 0; i < size; i++ ) {
-    auto now = static_cast<TIME_T>(duration_cast<seconds>(system_clock::now().time_since_epoch()).count());
-    TIME_T t;
+    long long int t;
     if (exec_jobs[i] == TRUE)
-      t = now - start_time[i];
+      t = time(NULL) - start_time[i];
     else if (exit_jobs[i] == TRUE)
       t = end_time[i] - start_time[i];
     else
@@ -46,10 +43,10 @@ void JobStatusMap::output_map(Command* cmd, ArgumentsList* arglist)
 void
 JobStatusMap::setExecuted( int i )
 {
-  assert (wait_jobs[i]);
+  if (wait_jobs[i] != TRUE) assert(false);
   wait_jobs[i] = FALSE;
   exec_jobs[i] = TRUE;
-  auto t = static_cast<TIME_T>(duration_cast<seconds>(system_clock::now().time_since_epoch()).count());
+  time_t t = time(NULL);
   start_time[i] = t;
   end_time[i] = t;
 }
@@ -57,10 +54,10 @@ JobStatusMap::setExecuted( int i )
 void
 JobStatusMap::setExit( int i )
 {
-  assert (!wait_jobs[i]);
-  assert (exec_jobs[i]);
+  if (wait_jobs[i] != FALSE) assert(false);
+  if (exec_jobs[i] != TRUE) assert(false);
   exec_jobs[i] = FALSE;
   exit_jobs[i] = TRUE;
-  auto t = static_cast<TIME_T>(duration_cast<seconds>(system_clock::now().time_since_epoch()).count());
+  time_t t = time(NULL);
   end_time[i] = t;
 }

@@ -1,15 +1,16 @@
 #include <iomanip>
 #include <sstream>
-//#include <ctime>
-#include <chrono>
+#include <time.h>
 
 #include "utilities.hpp"
 
 using namespace std;
 
 string localtimestamp() {
-  time_t timer = chrono::system_clock::to_time_t(chrono::system_clock::now());
-  struct tm *ltime = localtime(&timer);
+  time_t timer;
+  struct tm *ltime;
+  timer = time(NULL);
+  ltime = localtime(&timer);
 
   stringstream temp;
   temp << ltime->tm_year + 1900 << "/"
