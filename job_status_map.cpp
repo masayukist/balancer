@@ -10,12 +10,13 @@ using namespace std;
 using namespace std::chrono;
 
 JobStatusMap::JobStatusMap( int _myrank, int _size )
-  : wait_jobs( _myrank, _size, TRUE ),
-    exec_jobs( _myrank, _size, FALSE ),
-    exit_jobs( _myrank, _size, FALSE ),
-    start_time( _myrank, _size, 0 ),
-    end_time( _myrank, _size, 0 ),
-    size(_size)
+  : size(_size),
+    myrank(_myrank),
+    wait_jobs( myrank, size, TRUE ),
+    exec_jobs( myrank, size, FALSE ),
+    exit_jobs( myrank, size, FALSE ),
+    start_time( myrank, size, 0 ),
+    end_time( myrank, size, 0 )
 {}
 
 
@@ -45,7 +46,7 @@ void JobStatusMap::output_map(Command* cmd, ArgumentsList* arglist)
 void
 JobStatusMap::setExecuted( int i )
 {
-  assert (wait_jobs[i] == TRUE);
+  assert (wait_jobs[i]);
   wait_jobs[i] = FALSE;
   exec_jobs[i] = TRUE;
   auto t = static_cast<TIME_T>(duration_cast<seconds>(system_clock::now().time_since_epoch()).count());
@@ -56,8 +57,8 @@ JobStatusMap::setExecuted( int i )
 void
 JobStatusMap::setExit( int i )
 {
-  assert (wait_jobs[i] == FALSE);
-  assert (exec_jobs[i] == TRUE);
+  assert (!wait_jobs[i]);
+  assert (exec_jobs[i]);
   exec_jobs[i] = FALSE;
   exit_jobs[i] = TRUE;
   auto t = static_cast<TIME_T>(duration_cast<seconds>(system_clock::now().time_since_epoch()).count());

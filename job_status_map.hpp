@@ -8,13 +8,13 @@
 
 class JobStatusMap
 {
+    int size;
+    int myrank;
     MPISharedMap<int> wait_jobs;
     MPISharedMap<int> exec_jobs;
     MPISharedMap<int> exit_jobs;
     MPISharedMap<TIME_T> start_time;
     MPISharedMap<TIME_T> end_time;
-    int size;
-    int myrank;
 
     public:
     JobStatusMap( int _myrank, int _size );
