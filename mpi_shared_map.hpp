@@ -3,6 +3,7 @@
 
 #include "mpi.h"
 #include <cassert>
+#include <vector>
 
 #include "define.hpp"
 
@@ -10,34 +11,41 @@ template <typename TYPE>
 class MPISharedMap
 {
 protected:
-  TYPE *map;
   int myrank;
   int size;
+  std::vector<TYPE> map;
   MPI_Status stat;
   
 public:
   MPISharedMap( int _myrank, int _size, TYPE initial );
-  TYPE& operator[]( int i );
+  TYPE& operator[] ( int i ) &;
+  const TYPE& operator[] ( int i ) const&;
+  TYPE operator[] ( int i ) const&&;
   
   void mpi_bcast_from( int root_rank );
   void mpi_send_to_recv_from( int dest, int source );
 
-  bool is_equiv_map( TYPE* cmap );
-  void copy_map( TYPE *cmap );
+  bool is_equiv_map( std::vector<TYPE>&& cmap );
+  void copy_map( std::vector<TYPE>& cmap );
 };
 
 
 template<typename TYPE>
 MPISharedMap<TYPE>::MPISharedMap( int _myrank, int _size, TYPE initial )
-  : myrank(_myrank), size(_size)
-{
-  map = new TYPE[size];
-  for( int i = 0; i < size; i++ )
-    map[i] = (initial == true ? TRUE : FALSE);
-}
+  : myrank(_myrank), size(_size), map(size, initial)
+   {}
 
-template<typename TYPE> TYPE&
-MPISharedMap<TYPE>::operator[]( int i ) { return map[i]; } 
+template<typename TYPE> 
+TYPE&
+MPISharedMap<TYPE>::operator[]( int i ) & { return map[i]; } 
+
+template<typename TYPE> 
+const TYPE&
+MPISharedMap<TYPE>::operator[]( int i ) const& { return map[i]; } 
+
+template<typename TYPE> 
+TYPE
+MPISharedMap<TYPE>::operator[]( int i ) const&& { return std::move(map[i]); } 
 
 // template<typename TYPE>
 // void
@@ -59,7 +67,7 @@ MPISharedMap<TYPE>::operator[]( int i ) { return map[i]; }
 
 template<typename TYPE>
 bool
-MPISharedMap<TYPE>::is_equiv_map( TYPE* cmap )
+MPISharedMap<TYPE>::is_equiv_map(std::vector<TYPE>&& cmap )
 {
   for( int i = 0; i < size; i++ ) if( cmap[i] != map[i] ) return false;
   return true;
@@ -67,7 +75,7 @@ MPISharedMap<TYPE>::is_equiv_map( TYPE* cmap )
 
 template<typename TYPE>
 void
-MPISharedMap<TYPE>::copy_map( TYPE* cmap )
+MPISharedMap<TYPE>::copy_map(std::vector<TYPE>& cmap )
 {
   for( int i = 0; i < size; i++ ) cmap[i] = map[i];
 }

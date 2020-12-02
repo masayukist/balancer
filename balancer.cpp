@@ -10,10 +10,8 @@
 #include <thread>
 #include <cstring>
 #include <cstdlib>
-#include <unistd.h>
 #include <cassert>
-
-#include <time.h>
+#include <chrono>
 
 #include "job_status_map.hpp"
 #include "rank_status_map.hpp"
@@ -67,6 +65,9 @@ int main(int argc, char* argv[])
       cout << "list of back-ends: " << argv[i] << endl;
   }
 
+  MPI_Barrier(MPI_COMM_WORLD);
+  assert(sizeof(long long int) == sizeof(time_t));
+
   while(true) {
     // schedule jobs to processes by ascending order of rank
     for( int i = 0; i < numprocs; i++ ) {
@@ -79,17 +80,21 @@ int main(int argc, char* argv[])
         }
         
         if ( job_status_map.existWaitJobs() )
+        {
           if ( !workman.isAllocated() ) {
             job_id = job_status_map.getNextWaitJob();
             job_status_map.setExecuted(job_id);
             workman.allocate(job_id); 
           }
-
-        // no job and not allocation will cause termination
-        if ( !job_status_map.existWaitJobs() )
-          if ( !workman.isAllocated() )
+        }
+        else// no job and not allocation will cause termination
+        {
+          if ( !workman.isAllocated() ) {
             rank_status_map.setRankExit( myrank );
+          }
+        }
       }
+
       // share the status of jobs with the next process,
       // the last process broadcast the status to the all processes
       job_status_map.mpi_bcast_from( i );
@@ -109,7 +114,7 @@ int main(int argc, char* argv[])
     }
 
     // wait until the next scheduling interval
-    sleep(SCHEDULE_INTERVAL);
+    std::this_thread::sleep_for(std::chrono::seconds(SCHEDULE_INTERVAL));
   }
 
   MPI_Barrier(MPI_COMM_WORLD);
