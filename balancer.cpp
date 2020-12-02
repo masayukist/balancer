@@ -56,7 +56,6 @@ int main(int argc, char* argv[])
   JobStatusMap         job_status_map( myrank, argslist.size() );
   RankStatusMap        rank_status_map( myrank, numprocs );
   WorkerThreadManager  workman(&cmd, &argslist);
-  int                  job_id;
 
   if(myrank == 0) {
     cout << "*** balancer: command-level MPI parallelization ***" << endl;
@@ -71,10 +70,13 @@ int main(int argc, char* argv[])
   while(true) {
     // schedule jobs to processes by ascending order of rank
     for( int i = 0; i < numprocs; i++ ) {
+      job_status_map.mpi_bcast_from( i );
+      rank_status_map.mpi_bcast_from( i );
+
       if ( i == myrank ) { // if rank id indicates this process
 
         if ( workman.isDeallocatable() ){ // if the thread completes the task
-          job_id = workman.getCurrentJobId();
+          auto job_id = workman.getCurrentJobId();
           job_status_map.setExit(job_id);
           workman.deallocate();
         }
@@ -82,7 +84,7 @@ int main(int argc, char* argv[])
         if ( job_status_map.existWaitJobs() )
         {
           if ( !workman.isAllocated() ) {
-            job_id = job_status_map.getNextWaitJob();
+            auto job_id = job_status_map.getNextWaitJob();
             job_status_map.setExecuted(job_id);
             workman.allocate(job_id); 
           }
@@ -115,6 +117,7 @@ int main(int argc, char* argv[])
 
     // wait until the next scheduling interval
     std::this_thread::sleep_for(std::chrono::seconds(SCHEDULE_INTERVAL));
+    MPI_Barrier(MPI_COMM_WORLD);
   }
 
   MPI_Barrier(MPI_COMM_WORLD);
