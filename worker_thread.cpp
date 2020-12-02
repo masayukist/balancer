@@ -1,6 +1,5 @@
 #include "worker_thread.hpp"
-#include <cstdlib>
-
+/*
 void worker_func( std::string cmd, std::string args, bool* completed )
 {
   std::stringstream command;
@@ -11,3 +10,4 @@ void worker_func( std::string cmd, std::string args, bool* completed )
   std::system(balancer_cmd.str().c_str());
   *completed = true;
 }
+*/
