@@ -28,7 +28,8 @@ public:
         command << cmd << " " << args;
         //logger << stamp << "executing -> " << command.str() << endl;
         balancer_cmd << "export BALANCER=1; " << command.str() << std::endl;
-        std::system(balancer_cmd.str().c_str());
+        const auto str = balancer_cmd.str(); // temporary object must be stored once
+        std::system(str.c_str());
         set_completed();
     };
     th = new std::thread(worker_func, cmd, args);
