@@ -4,7 +4,6 @@
 #include <thread>
 #include <string>
 #include <sstream>
-#include <mutex>
 #include <cstdlib>
 #include <cassert>
 
@@ -14,7 +13,6 @@ class WorkerThread
 {
   bool completed;
   std::thread* th;
-  std::mutex mtx;
 public:
   WorkerThread() 
   :completed(false),th(nullptr) 
@@ -45,12 +43,10 @@ public:
   }
 
   void set_completed() {
-      std::lock_guard<std::mutex> lock(mtx);
       completed=true;
   }
 
   bool is_completed() { 
-      std::lock_guard<std::mutex> lock(mtx);
       return completed; 
   }
 };
