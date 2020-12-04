@@ -32,9 +32,7 @@ public:
   MPISharedMap( int _myrank, int _size, int _noderank, int _nodesize, MPI_Comm _nodecomm, TYPE initial );
   virtual ~MPISharedMap(){
     MPI_Win_fence(0, wintable);
-    //if (noderank == 0) {
-        MPI_Win_free(&wintable); 
-    //}
+    MPI_Win_free(&wintable); 
     map = nullptr;
   }
 
