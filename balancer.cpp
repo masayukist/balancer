@@ -38,12 +38,23 @@ int main(int argc, char* argv[])
   MPI_Comm_size(MPI_COMM_WORLD, &numprocs);
   MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
 
+  int nodesize;
+  int noderank;
+  MPI_Comm nodecomm;
+
+  MPI_Comm_split_type(MPI_COMM_WORLD, MPI_COMM_TYPE_SHARED, myrank,
+          MPI_INFO_NULL, &nodecomm);
+
+  MPI_Comm_size(nodecomm, &nodesize);
+  MPI_Comm_rank(nodecomm, &noderank);
+
+
   string logfile
     = string(LOG_DIR)+string("/mpi.proc.")
     + to_string((long long)myrank)
     + string(".log");
   
-  //logger.open(logfile);
+  logger.open(logfile);
 
   if( argc < 3 ) {
     if(myrank == 0) usage(argc, argv);
@@ -53,8 +64,8 @@ int main(int argc, char* argv[])
 
   Command              cmd( argv[1] );
   ArgumentsList        argslist( &argv[2], argc-2 );
-  JobStatusMap         job_status_map( myrank, argslist.size() );
-  RankStatusMap        rank_status_map( myrank, numprocs );
+  JobStatusMap         job_status_map( myrank, argslist.size(), noderank, nodesize, nodecomm);
+  RankStatusMap        rank_status_map( myrank, numprocs, noderank, nodesize, nodecomm);
   WorkerThreadManager  workman(&cmd, &argslist);
 
   if(myrank == 0) {
@@ -70,9 +81,6 @@ int main(int argc, char* argv[])
   while(true) {
     // schedule jobs to processes by ascending order of rank
     for( int i = 0; i < numprocs; i++ ) {
-      job_status_map.mpi_bcast_from( i );
-      rank_status_map.mpi_bcast_from( i );
-
       if ( i == myrank ) { // if rank id indicates this process
 
         if ( workman.isDeallocatable() ){ // if the thread completes the task
@@ -97,10 +105,18 @@ int main(int argc, char* argv[])
         }
       }
 
+      if(myrank == 0) {
+          logger << "begin bcast:" << i << endl;
+      }
+
       // share the status of jobs with the next process,
       // the last process broadcast the status to the all processes
       job_status_map.mpi_bcast_from( i );
       rank_status_map.mpi_bcast_from( i );
+
+      if(myrank == 0) {
+          logger << "done bcast:" << i << endl;
+      }
     }
 
     if (myrank == 0) {
@@ -110,7 +126,7 @@ int main(int argc, char* argv[])
 
     // if no more job, breaking loop
     if ( !job_status_map.existWaitJobs() ) {
-      //logger << stamp << "the worker thread waits for exit" << endl;
+      logger << stamp << "the worker thread waits for exit" << endl;
       if ( rank_status_map.isAllExit() )
         break;
     }

@@ -9,14 +9,17 @@
 using namespace std;
 using namespace std::chrono;
 
-JobStatusMap::JobStatusMap( int _myrank, int _size )
-  : size(_size),
-    myrank(_myrank),
-    wait_jobs( myrank, size, TRUE ),
-    exec_jobs( myrank, size, FALSE ),
-    exit_jobs( myrank, size, FALSE ),
-    start_time( myrank, size, 0 ),
-    end_time( myrank, size, 0 ),
+JobStatusMap::JobStatusMap( int _myrank, int _size, int _noderank, int _nodesize, MPI_Comm _nodecomm )
+  : myrank(_myrank),
+    size(_size),
+    noderank(_noderank),
+    nodesize(_nodesize),
+    nodecomm(_nodecomm),
+    wait_jobs( myrank, size, noderank, nodesize, nodecomm, TRUE ),
+    exec_jobs( myrank, size, noderank, nodesize, nodecomm, FALSE ),
+    exit_jobs( myrank, size, noderank, nodesize, nodecomm, FALSE ),
+    start_time( myrank, size, noderank, nodesize, nodecomm, 0 ),
+    end_time( myrank, size, noderank, nodesize, nodecomm, 0 ),
     o(string(LOG_DIR)+string("/mpi.job_map.log"))
 {}
 
