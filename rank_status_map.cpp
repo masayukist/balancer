@@ -32,7 +32,7 @@ RankStatusMap::setRankExit(int i)
 void RankStatusMap::output_map()
 {
   TIME_T duration;
-  std::ofstream o(string(LOG_DIR)+string("/mpi.rank_map.log"));
+  auto o = ofstream{string(LOG_DIR)+string("/mpi.rank_map.log")};
   
   o << "active rank | " << localtimestamp() << endl;
   for ( int i = 0; i < size; i++ ) {
