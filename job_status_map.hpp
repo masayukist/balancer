@@ -1,5 +1,5 @@
 #include "mpi.h"
-#include "mpi_shared_map.hpp"
+#include "mpi_shared_array.hpp"
 #include "command.hpp"
 #include "argument_list.hpp"
 
@@ -13,11 +13,11 @@ class JobStatusMap
     const int noderank;
     const int nodesize;
     const MPI_Comm nodecomm;
-    MPISharedMap<int> wait_jobs;
-    MPISharedMap<int> exec_jobs;
-    MPISharedMap<int> exit_jobs;
-    MPISharedMap<TIME_T> start_time;
-    MPISharedMap<TIME_T> end_time;
+    MPISharedArray<int> wait_jobs;
+    MPISharedArray<int> exec_jobs;
+    MPISharedArray<int> exit_jobs;
+    MPISharedArray<TIME_T> start_time;
+    MPISharedArray<TIME_T> end_time;
 
     public:
     JobStatusMap( int _myrank, int _size, int _noderank, int _nodesize, MPI_Comm _nodecomm);

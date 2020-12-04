@@ -1,5 +1,5 @@
-#ifndef __BALANCER__MPI_SHARED_MAP_HPP__
-#define __BALANCER__MPI_SHARED_MAP_HPP__
+#ifndef __BALANCER__MPI_SHARED_ARRAY_HPP__
+#define __BALANCER__MPI_SHARED_ARRAY_HPP__
 
 #include "mpi.h"
 #include <cassert>
@@ -9,7 +9,7 @@
 #include "define.hpp"
 
 template <typename TYPE>
-class MPISharedMap
+class MPISharedArray
 {
 protected:
   const int myrank;
@@ -29,8 +29,8 @@ protected:
   MPI_Win wintable;
   
 public:
-  MPISharedMap( int _myrank, int _size, int _noderank, int _nodesize, MPI_Comm _nodecomm, TYPE initial );
-  virtual ~MPISharedMap(){
+  MPISharedArray( int _myrank, int _size, int _noderank, int _nodesize, MPI_Comm _nodecomm, TYPE initial );
+  virtual ~MPISharedArray(){
     MPI_Win_fence(0, wintable);
     MPI_Win_free(&wintable); 
     map = nullptr;
@@ -48,7 +48,7 @@ public:
 
 
 template<typename TYPE>
-MPISharedMap<TYPE>::MPISharedMap( int _myrank, int _size, int _noderank, 
+MPISharedArray<TYPE>::MPISharedArray( int _myrank, int _size, int _noderank, 
                                   int _nodesize, MPI_Comm _nodecomm, TYPE initial )
     : myrank(_myrank), size(_size), 
       noderank(_noderank), nodesize(_nodesize), nodecomm(_nodecomm)
@@ -116,20 +116,20 @@ MPISharedMap<TYPE>::MPISharedMap( int _myrank, int _size, int _noderank,
 
 template<typename TYPE> 
 TYPE&
-MPISharedMap<TYPE>::operator[]( int i ) { 
+MPISharedArray<TYPE>::operator[]( int i ) { 
     return map[i]; 
 } 
 
 // template<typename TYPE>
 // void
-// MPISharedMap<TYPE>::mpi_bcast_from( int root_rank )
+// MPISharedArray<TYPE>::mpi_bcast_from( int root_rank )
 // {
 //   MPI_Bcast( map, size, TYPE, root_rank, MPI_COMM_WORLD );
 // }
 
 // template<typename TYPE>
 // void
-// MPISharedMap<TYPE>::mpi_send_to_recv_from( int dest, int source )
+// MPISharedArray<TYPE>::mpi_send_to_recv_from( int dest, int source )
 // {
 //   assert(dest != source);
 //   if ( myrank == source )
@@ -140,7 +140,7 @@ MPISharedMap<TYPE>::operator[]( int i ) {
 
 template<typename TYPE>
 bool
-MPISharedMap<TYPE>::is_equiv_map(std::vector<TYPE>&& cmap )
+MPISharedArray<TYPE>::is_equiv_map(std::vector<TYPE>&& cmap )
 {
   for( int i = 0; i < size; i++ ) if( cmap[i] != map[i] ) return false;
   return true;
@@ -148,7 +148,7 @@ MPISharedMap<TYPE>::is_equiv_map(std::vector<TYPE>&& cmap )
 
 template<typename TYPE>
 void
-MPISharedMap<TYPE>::copy_map(std::vector<TYPE>& cmap )
+MPISharedArray<TYPE>::copy_map(std::vector<TYPE>& cmap )
 {
   for( int i = 0; i < size; i++ ) cmap[i] = map[i];
 }

@@ -1,9 +1,9 @@
-#include "mpi_shared_map.hpp"
+#include "mpi_shared_array.hpp"
 
 //specialized for long long int
 template<>
 void
-MPISharedMap<long long int>::mpi_bcast_from( int root_rank )
+MPISharedArray<long long int>::mpi_bcast_from( int root_rank )
 {
     MPI_Win_fence(0,wintable);
 
@@ -16,7 +16,7 @@ MPISharedMap<long long int>::mpi_bcast_from( int root_rank )
 
 template<>
 void
-MPISharedMap<long long int>::mpi_send_to_recv_from( int dest, int source )
+MPISharedArray<long long int>::mpi_send_to_recv_from( int dest, int source )
 {
   if (dest == source) return;
 
@@ -33,7 +33,7 @@ MPISharedMap<long long int>::mpi_send_to_recv_from( int dest, int source )
 //specialized for int
 template<>
 void
-MPISharedMap<int>::mpi_bcast_from( int root_rank )
+MPISharedArray<int>::mpi_bcast_from( int root_rank )
 {
     MPI_Win_fence(0,wintable);
 
@@ -45,7 +45,7 @@ MPISharedMap<int>::mpi_bcast_from( int root_rank )
 
 template<>
 void
-MPISharedMap<int>::mpi_send_to_recv_from( int dest, int source )
+MPISharedArray<int>::mpi_send_to_recv_from( int dest, int source )
 {
   if (dest == source) return;
 

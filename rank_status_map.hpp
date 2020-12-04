@@ -1,4 +1,4 @@
-#include "mpi_shared_map.hpp"
+#include "mpi_shared_array.hpp"
 #include "define.hpp"
 #include "utilities.hpp"
 
@@ -7,8 +7,8 @@
 
 class RankStatusMap
 {
-  MPISharedMap<int> ranks_active;
-  MPISharedMap<TIME_T> ranks_duration;
+  MPISharedArray<int> ranks_active;
+  MPISharedArray<TIME_T> ranks_duration;
 
   const int size;
   
