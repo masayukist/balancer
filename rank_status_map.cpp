@@ -8,9 +8,9 @@
 using namespace std;
 using namespace std::chrono;
 
-RankStatusMap::RankStatusMap( int _myrank, int _size )
-  : ranks_active( _myrank, _size, TRUE ),
-    ranks_duration( _myrank, _size, 0 ),
+RankStatusMap::RankStatusMap( int _myrank, int _size, int _noderank, int _nodesize, MPI_Comm _nodecomm)
+  : ranks_active( _myrank, _size, _noderank, _nodesize, _nodecomm, TRUE ),
+    ranks_duration( _myrank, _size, _noderank, _nodesize, _nodecomm, TIME_T{0} ),
     size(_size)
 {  
   for (int i = 0; i < size; i++){
@@ -32,7 +32,7 @@ RankStatusMap::setRankExit(int i)
 void RankStatusMap::output_map()
 {
   TIME_T duration;
-  std::ofstream o(string(LOG_DIR)+string("/mpi.rank_map.log"));
+  auto o = ofstream{string(LOG_DIR)+string("/mpi.rank_map.log")};
   
   o << "active rank | " << localtimestamp() << endl;
   for ( int i = 0; i < size; i++ ) {
