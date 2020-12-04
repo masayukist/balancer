@@ -13,7 +13,7 @@ class RankStatusMap
   int size;
   
 public:
-  RankStatusMap( int _myrank, int _size );
+  RankStatusMap( int _myrank, int _size, int _noderank, int _nodesize, MPI_Comm _nodecomm);
   virtual ~RankStatusMap()
   {
   }

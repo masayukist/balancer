@@ -8,8 +8,11 @@
 
 class JobStatusMap
 {
-    int size;
-    int myrank;
+    const int myrank;
+    const int size;
+    const int noderank;
+    const int nodesize;
+    const MPI_Comm nodecomm;
     MPISharedMap<int> wait_jobs;
     MPISharedMap<int> exec_jobs;
     MPISharedMap<int> exit_jobs;
@@ -17,7 +20,7 @@ class JobStatusMap
     MPISharedMap<TIME_T> end_time;
 
     public:
-    JobStatusMap( int _myrank, int _size );
+    JobStatusMap( int _myrank, int _size, int _noderank, int _nodesize, MPI_Comm _nodecomm);
     virtual ~JobStatusMap(){
     }
 
