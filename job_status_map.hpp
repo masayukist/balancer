@@ -15,12 +15,10 @@ class JobStatusMap
     MPISharedMap<int> exit_jobs;
     MPISharedMap<TIME_T> start_time;
     MPISharedMap<TIME_T> end_time;
-    std::ofstream o;
 
     public:
     JobStatusMap( int _myrank, int _size );
     virtual ~JobStatusMap(){
-        o.close();
     }
 
     void mpi_bcast_from( int root_rank ) {
