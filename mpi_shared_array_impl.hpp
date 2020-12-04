@@ -31,7 +31,8 @@ MPISharedArray<TYPE>::allocate_shared_memory()
     {
         if (MPI_WIN_UNIFIED == *model)
         {
-            if (myrank == 0) printf("Memory model is MPI_WIN_UNIFIED\n");
+            // do nothing
+            //if (myrank == 0) printf("Memory model is MPI_WIN_UNIFIED\n");
         }
         else
         {
