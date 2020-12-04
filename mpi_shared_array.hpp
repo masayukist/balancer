@@ -13,7 +13,7 @@ class MPISharedArray
 {
 protected:
   const int myrank;
-  const int size;
+  const int _size;
   TYPE *map;
   MPI_Status stat;
 
@@ -31,9 +31,9 @@ protected:
   void allocate_shared_memory();
   
 public:
-  MPISharedArray( int _myrank, int _size, int _noderank, int _nodesize, MPI_Comm _nodecomm, TYPE initial );
+  MPISharedArray( int _myrank, int __size, int _noderank, int _nodesize, MPI_Comm _nodecomm, TYPE initial );
 
-  MPISharedArray( int _myrank, int _size, int _noderank, int _nodesize, MPI_Comm _nodecomm, TYPE* initial[] );
+  MPISharedArray( int _myrank, int __size, int _noderank, int _nodesize, MPI_Comm _nodecomm, TYPE initial[] );
 
   virtual ~MPISharedArray(){
     MPI_Win_fence(0, wintable);
@@ -47,7 +47,7 @@ public:
       return map[i]; 
   };
 
-  int size() const { return size; };
+  int size() const { return _size; };
 
   TYPE* data() const { return map; };
   

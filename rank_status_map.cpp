@@ -10,7 +10,7 @@ using namespace std::chrono;
 
 RankStatusMap::RankStatusMap( int _myrank, int _size, int _noderank, int _nodesize, MPI_Comm _nodecomm)
   : ranks_active( _myrank, _size, _noderank, _nodesize, _nodecomm, TRUE ),
-    ranks_duration( _myrank, _size, _noderank, _nodesize, _nodecomm, 0 ),
+    ranks_duration( _myrank, _size, _noderank, _nodesize, _nodecomm, TIME_T{0} ),
     size(_size)
 {  
   for (int i = 0; i < size; i++){

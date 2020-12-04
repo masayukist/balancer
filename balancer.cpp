@@ -64,7 +64,7 @@ int main(int argc, char* argv[])
       }
 
       Command              cmd( argv[1] );
-      ArgumentsList        argslist( &argv[2], argc-2 );
+      ArgumentsList        argslist( &argv[2], argc-2, myrank, noderank, nodesize, nodecomm );
       JobStatusMap         job_status_map( myrank, argslist.size(), noderank, nodesize, nodecomm);
       RankStatusMap        rank_status_map( myrank, numprocs, noderank, nodesize, nodecomm);
       WorkerThreadManager  workman(&cmd, &argslist);

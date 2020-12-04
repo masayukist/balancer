@@ -18,8 +18,8 @@ JobStatusMap::JobStatusMap( int _myrank, int _size, int _noderank, int _nodesize
     wait_jobs( myrank, size, noderank, nodesize, nodecomm, TRUE ),
     exec_jobs( myrank, size, noderank, nodesize, nodecomm, FALSE ),
     exit_jobs( myrank, size, noderank, nodesize, nodecomm, FALSE ),
-    start_time( myrank, size, noderank, nodesize, nodecomm, 0 ),
-    end_time( myrank, size, noderank, nodesize, nodecomm, 0 )
+    start_time( myrank, size, noderank, nodesize, nodecomm, TIME_T{0} ),
+    end_time( myrank, size, noderank, nodesize, nodecomm, TIME_T{0} )
 {}
 
 

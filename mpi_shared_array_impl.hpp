@@ -1,4 +1,5 @@
 template<typename TYPE>
+void
 MPISharedArray<TYPE>::allocate_shared_memory()
 {
     TYPE *localmap;
@@ -7,12 +8,12 @@ MPISharedArray<TYPE>::allocate_shared_memory()
     if(noderank != 0){
         localsize = 0;
     }else{
-        localsize=size;
+        localsize=_size;
     }
 
     /*
     std::cout << "myank:" << myrank << ", noderank:" << noderank << " of " << nodesize
-              << " size = " << size << std:: endl;
+              << " size = " << _size << std:: endl;
     */
 
     MPI_Win_allocate_shared(localsize*sizeof(TYPE), sizeof(TYPE),
@@ -51,9 +52,9 @@ MPISharedArray<TYPE>::allocate_shared_memory()
 }
 
 template<typename TYPE>
-MPISharedArray<TYPE>::MPISharedArray( int _myrank, int _size, int _noderank, 
+MPISharedArray<TYPE>::MPISharedArray( int _myrank, int __size, int _noderank, 
                                   int _nodesize, MPI_Comm _nodecomm, TYPE initial )
-    : myrank(_myrank), size(_size), 
+    : myrank(_myrank), _size(__size), 
       noderank(_noderank), nodesize(_nodesize), nodecomm(_nodecomm)
 {
     allocate_shared_memory();
@@ -65,7 +66,7 @@ MPISharedArray<TYPE>::MPISharedArray( int _myrank, int _size, int _noderank,
     // Initialize table on rank 0 with appropriate synchronization
 
     if (noderank == 0){
-        for (auto i = decltype(size){0}; i < size; ++i){
+        for (auto i = decltype(_size){0}; i < _size; ++i){
             map[i] = initial;
         }
     }
@@ -75,9 +76,9 @@ MPISharedArray<TYPE>::MPISharedArray( int _myrank, int _size, int _noderank,
 }
 
 template<typename TYPE>
-MPISharedArray<TYPE>::MPISharedArray( int _myrank, int _size, int _noderank, 
-                                  int _nodesize, MPI_Comm _nodecomm, TYPE* initial[] )
-    : myrank(_myrank), size(_size), 
+MPISharedArray<TYPE>::MPISharedArray( int _myrank, int __size, int _noderank, 
+                                  int _nodesize, MPI_Comm _nodecomm, TYPE initial[] )
+    : myrank(_myrank), _size(__size), 
       noderank(_noderank), nodesize(_nodesize), nodecomm(_nodecomm)
 {
     allocate_shared_memory();
@@ -89,7 +90,7 @@ MPISharedArray<TYPE>::MPISharedArray( int _myrank, int _size, int _noderank,
     // Initialize table on rank 0 with appropriate synchronization
 
     if (noderank == 0){
-        for (auto i = decltype(size){0}; i < size; ++i){
+        for (auto i = decltype(_size){0}; i < _size; ++i){
             map[i] = initial[i];
         }
     }
@@ -102,7 +103,7 @@ MPISharedArray<TYPE>::MPISharedArray( int _myrank, int _size, int _noderank,
 // void
 // MPISharedArray<TYPE>::mpi_bcast_from( int root_rank )
 // {
-//   MPI_Bcast( map, size, TYPE, root_rank, MPI_COMM_WORLD );
+//   MPI_Bcast( map, _size, TYPE, root_rank, MPI_COMM_WORLD );
 // }
 
 // template<typename TYPE>
@@ -111,16 +112,16 @@ MPISharedArray<TYPE>::MPISharedArray( int _myrank, int _size, int _noderank,
 // {
 //   assert(dest != source);
 //   if ( myrank == source )
-//     MPI_Send( map, size, TYPE, dest, 0, MPI_COMM_WORLD );
+//     MPI_Send( map, _size, TYPE, dest, 0, MPI_COMM_WORLD );
 //   else if ( myrank == dest )
-//     MPI_Recv( map, size, TYPE, source, 0, MPI_COMM_WORLD, &stat );
+//     MPI_Recv( map, _size, TYPE, source, 0, MPI_COMM_WORLD, &stat );
 // }
 
 template<typename TYPE>
 bool
 MPISharedArray<TYPE>::is_equiv_map(std::vector<TYPE>&& cmap )
 {
-  for( int i = 0; i < size; i++ ) if( cmap[i] != map[i] ) return false;
+  for( int i = 0; i < _size; i++ ) if( cmap[i] != map[i] ) return false;
   return true;
 }
 
@@ -128,7 +129,7 @@ template<typename TYPE>
 void
 MPISharedArray<TYPE>::copy_map(std::vector<TYPE>& cmap )
 {
-  for( int i = 0; i < size; i++ ) cmap[i] = map[i];
+  for( int i = 0; i < _size; i++ ) cmap[i] = map[i];
 }
 
 
