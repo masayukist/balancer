@@ -11,13 +11,11 @@ class RankStatusMap
   MPISharedMap<TIME_T> ranks_duration;
 
   const int size;
-  std::ofstream o;
   
 public:
   RankStatusMap( int _myrank, int _size, int _noderank, int _nodesize, MPI_Comm _nodecomm);
   virtual ~RankStatusMap()
   {
-    o.close();
   }
 
   void mpi_bcast_from( int root_rank ) {

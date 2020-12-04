@@ -9,6 +9,8 @@ MPISharedMap<long long int>::mpi_bcast_from( int root_rank )
 
     auto ret = MPI_Bcast( map, size, MPI_LONG_LONG_INT, root_rank, MPI_COMM_WORLD );
     assert(ret == MPI_SUCCESS);
+
+    MPI_Win_fence(0,wintable);
 }
 
 
@@ -37,6 +39,8 @@ MPISharedMap<int>::mpi_bcast_from( int root_rank )
 
     auto ret = MPI_Bcast( map, size, MPI_INT, root_rank, MPI_COMM_WORLD );
     assert(ret == MPI_SUCCESS);
+
+    MPI_Win_fence(0,wintable);
 }
 
 template<>

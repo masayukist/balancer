@@ -19,13 +19,13 @@ JobStatusMap::JobStatusMap( int _myrank, int _size, int _noderank, int _nodesize
     exec_jobs( myrank, size, noderank, nodesize, nodecomm, FALSE ),
     exit_jobs( myrank, size, noderank, nodesize, nodecomm, FALSE ),
     start_time( myrank, size, noderank, nodesize, nodecomm, 0 ),
-    end_time( myrank, size, noderank, nodesize, nodecomm, 0 ),
-    o(string(LOG_DIR)+string("/mpi.job_map.log"))
+    end_time( myrank, size, noderank, nodesize, nodecomm, 0 )
 {}
 
 
 void JobStatusMap::output_map(Command* cmd, ArgumentsList* arglist)
 {
+  std::ofstream o(string(LOG_DIR)+string("/mpi.job_map.log"));
   o << "wait exec exit job | " << localtimestamp() << endl;
   for ( int i = 0; i < size; i++ ) {
     auto now = static_cast<TIME_T>(duration_cast<seconds>(system_clock::now().time_since_epoch()).count());
@@ -42,7 +42,7 @@ void JobStatusMap::output_map(Command* cmd, ArgumentsList* arglist)
       << setw(40) << left << cmd->get_str() + " " + (*arglist)[i] << " "
       << setw(20) << right << t << " sec." << endl;
   }
-  o.flush();
+  o.close();
 }
 
 void
