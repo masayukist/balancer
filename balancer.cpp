@@ -70,8 +70,6 @@ int main(int argc, char* argv[])
   while(true) {
     // schedule jobs to processes by ascending order of rank
     for( int i = 0; i < numprocs; i++ ) {
-      job_status_map.mpi_bcast_from( i );
-      rank_status_map.mpi_bcast_from( i );
 
       if ( i == myrank ) { // if rank id indicates this process
 
