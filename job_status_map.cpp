@@ -19,8 +19,7 @@ JobStatusMap::JobStatusMap( int _myrank, int _size, int _noderank, int _nodesize
     exec_jobs( myrank, size, noderank, nodesize, nodecomm, FALSE ),
     exit_jobs( myrank, size, noderank, nodesize, nodecomm, FALSE ),
     start_time( myrank, size, noderank, nodesize, nodecomm, 0 ),
-    end_time( myrank, size, noderank, nodesize, nodecomm, 0 ),
-    o(string(LOG_DIR)+string("/mpi.job_map.log"))
+    end_time( myrank, size, noderank, nodesize, nodecomm, 0 )
 {}
 
 
